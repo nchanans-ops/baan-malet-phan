@@ -697,10 +697,12 @@ p.body-text{font-size:0.94rem;color:var(--gray-600);line-height:1.9;margin-botto
 
   /* app padding bottom */
   .app{ padding-bottom:72px; }
+  .nav{ display:none !important; }
 
   /* ── MOBILE HEADER ── */
   .mobile-header{
     display:block;
+    position:sticky;top:0;left:0;right:0;z-index:400;
     background:#15803d;
     padding:env(safe-area-inset-top,0) 0 0;
   }
@@ -4539,21 +4541,27 @@ async function doForgot(){
 }
 
 function mobileNav(id){
+  // เช็ค lock ก่อน
+  const restricted = ['ai','review','flashcard'];
+  if(restricted.includes(id) && !isLoggedIn()){
+    showGuestLock('กรุณาเข้าสู่ระบบเพื่อใช้งาน ' + (id==='ai'?'AI Tutor':id==='flashcard'?'Flashcard':'ทบทวนก่อนสอบ'));
+    return;
+  }
+
   // แสดง/ซ่อน hero card และ CTA ตามหน้า
   const heroCard = document.getElementById('mobile-hero-card');
   const cta = document.getElementById('mobile-cta');
-  const avatarBtn = document.getElementById('mobile-avatar-btn');
   if(heroCard) heroCard.style.display = (id==='overview') ? '' : 'none';
   if(cta) cta.style.display = (id==='overview') ? '' : 'none';
 
-  // update bottom nav active
+  // update bottom nav active state
   ['overview','lesson','quiz','flashcard','ai'].forEach(tab => {
     const btn = document.getElementById('mnav-'+tab);
     if(!btn) return;
     btn.classList.remove('active');
     const svg = btn.querySelector('svg');
     const label = btn.querySelector('.mni-label');
-    if(svg){ svg.style.stroke='#9ca3af'; }
+    if(svg) svg.style.stroke = '#9ca3af';
     if(label){ label.style.color='#9ca3af'; label.style.fontWeight=''; }
   });
   const activeBtn = document.getElementById('mnav-'+id);
@@ -4561,12 +4569,17 @@ function mobileNav(id){
     activeBtn.classList.add('active');
     const svg = activeBtn.querySelector('svg');
     const label = activeBtn.querySelector('.mni-label');
-    if(svg) svg.style.stroke='#15803d';
+    if(svg) svg.style.stroke = '#15803d';
     if(label){ label.style.color='#15803d'; label.style.fontWeight='700'; }
   }
 
-  // update avatar btn (ถ้า login แล้วเปลี่ยน icon)
-  showView(id);
+  // navigate
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const view = document.getElementById('view-'+id);
+  if(view) view.classList.add('active');
+  if(id==='flashcard') fcStart();
+  if(id==='quiz') setTimeout(applyGuestQuizLock, 50);
+  if(id==='lesson' && typeof curLesson !== 'undefined') renderLesson();
   window.scrollTo(0,0);
 }
 
@@ -4574,7 +4587,7 @@ function updateMobileAvatar(user){
   const btn = document.getElementById('mobile-avatar-btn');
   if(!btn) return;
   btn.innerHTML = `<div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.9);color:#15803d;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;">${user.name.charAt(0)}</div>`;
-  btn.onclick = null;
+  btn.onclick = () => { if(confirm('ออกจากระบบ?')) doLogout(); };
 }
 
   if(!isLoggedIn()) return;
@@ -4665,7 +4678,7 @@ function doLogout(){
 // ตรวจสอบว่า login อยู่ไหม
 const _currentUser = getCurrentUser();
 if(_currentUser){
-  setTimeout(()=>{ updateNavUser(_currentUser); applyLoginState(); }, 100);
+  setTimeout(()=>{ updateNavUser(_currentUser); updateMobileAvatar(_currentUser); applyLoginState(); }, 100);
   localStorage.setItem('lv_player_name', _currentUser.name);
 }
 </script>
