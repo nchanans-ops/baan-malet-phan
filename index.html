@@ -1624,6 +1624,11 @@ function showView(id){
   window.scrollTo(0,0);
   if(id==='flashcard') fcStart();
   if(id==='quiz') setTimeout(applyGuestQuizLock, 50);
+  if(id==='lesson'){
+    // render lesson ทันทีหลัง view active
+    if(typeof curLesson !== 'undefined') renderLesson();
+    else { curLesson=0; done[0]=true; renderLesson(); updateSidebar(); }
+  }
 }
 
 
