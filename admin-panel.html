@@ -186,7 +186,7 @@ input:checked+.sldr:before{transform:translateX(19px);background:white;}
 <!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, doc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDPC4EkkU5ah2PwqUDkILrqP3N-tiPEn8k",
@@ -244,22 +244,15 @@ onSnapshot(collection(db, 'reset_requests'), snap => {
 // ── Config (API Key) ──
 window.fsGetConfig = async () => {
   try {
-    const { getDoc, doc } = window._fs || {};
-    if(!getDoc) return null;
-    const snap = await getDoc(doc(window._db, 'config', 'ai'));
+    const snap = await getDoc(doc(db, 'config', 'ai'));
     return snap.exists() ? snap.data() : null;
   } catch(e) { return null; }
 };
 window.fsSaveConfig = async (data) => {
-  const { setDoc, doc } = window._fs || {};
-  await setDoc(doc(window._db, 'config', 'ai'), data);
+  await setDoc(doc(db, 'config', 'ai'), data);
 };
-
-// ── Real-time config listener (ให้ seed-tech รับได้ด้วย) ──
 window.fsWatchConfig = (callback) => {
-  const { onSnapshot, doc } = window._fs || {};
-  if(!onSnapshot) return;
-  return onSnapshot(doc(window._db, 'config', 'ai'), snap => {
+  return onSnapshot(doc(db, 'config', 'ai'), snap => {
     callback(snap.exists() ? snap.data() : null);
   });
 };

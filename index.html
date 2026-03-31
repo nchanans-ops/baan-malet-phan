@@ -741,16 +741,15 @@ window.deleteResetRequest = async function(id) {
 // ── Config (API Key) real-time ──
 window.fsGetConfig = async () => {
   try {
-    const snap = await _fs.getDoc(_fs.doc(db, 'config', 'ai'));
+    const snap = await getDoc(doc(db, 'config', 'ai'));
     return snap.exists() ? snap.data() : null;
   } catch(e) { return null; }
 };
 
-// โหลด config ตอนเริ่มและ watch real-time
-let _cachedConfig = null;
-_fs.onSnapshot(_fs.doc(db, 'config', 'ai'), snap => {
-  _cachedConfig = snap.exists() ? snap.data() : null;
-  window._aiConfig = _cachedConfig;
+// watch real-time เมื่อ Admin อัปเดต key จะได้ทันที
+onSnapshot(doc(db, 'config', 'ai'), snap => {
+  window._aiConfig = snap.exists() ? snap.data() : null;
+  console.log('✓ AI config updated:', window._aiConfig ? 'has key' : 'no key');
 });
 
 console.log('✓ Firebase Firestore connected');
