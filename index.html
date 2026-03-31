@@ -738,6 +738,21 @@ window.deleteResetRequest = async function(id) {
   try { await deleteDoc(doc(db, 'reset_requests', id)); } catch(e) {}
 };
 
+// ── Config (API Key) real-time ──
+window.fsGetConfig = async () => {
+  try {
+    const snap = await _fs.getDoc(_fs.doc(db, 'config', 'ai'));
+    return snap.exists() ? snap.data() : null;
+  } catch(e) { return null; }
+};
+
+// โหลด config ตอนเริ่มและ watch real-time
+let _cachedConfig = null;
+_fs.onSnapshot(_fs.doc(db, 'config', 'ai'), snap => {
+  _cachedConfig = snap.exists() ? snap.data() : null;
+  window._aiConfig = _cachedConfig;
+});
+
 console.log('✓ Firebase Firestore connected');
 </script>
 </head>
@@ -3897,6 +3912,8 @@ function trackQuiz(){
 
 // ─── AI with real OpenAI API ───
 function getAPIKey(){
+  // ดึงจาก Firestore cache ก่อน (real-time) ถ้าไม่มีค่อยใช้ localStorage
+  if(window._aiConfig && window._aiConfig.key) return window._aiConfig;
   try{const c=stg('lv_api');return c||null;}catch{return null;}
 }
 

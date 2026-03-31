@@ -241,6 +241,29 @@ onSnapshot(collection(db, 'reset_requests'), snap => {
   if(badge){ if(pending>0){badge.style.display='inline';badge.textContent=pending;}else{badge.style.display='none';} }
 });
 
+// ── Config (API Key) ──
+window.fsGetConfig = async () => {
+  try {
+    const { getDoc, doc } = window._fs || {};
+    if(!getDoc) return null;
+    const snap = await getDoc(doc(window._db, 'config', 'ai'));
+    return snap.exists() ? snap.data() : null;
+  } catch(e) { return null; }
+};
+window.fsSaveConfig = async (data) => {
+  const { setDoc, doc } = window._fs || {};
+  await setDoc(doc(window._db, 'config', 'ai'), data);
+};
+
+// ── Real-time config listener (ให้ seed-tech รับได้ด้วย) ──
+window.fsWatchConfig = (callback) => {
+  const { onSnapshot, doc } = window._fs || {};
+  if(!onSnapshot) return;
+  return onSnapshot(doc(window._db, 'config', 'ai'), snap => {
+    callback(snap.exists() ? snap.data() : null);
+  });
+};
+
 console.log('✓ Admin Firebase connected');
 </script>
 </head>
@@ -812,27 +835,36 @@ function clearV(){
 }
 
 // API
-function loadAPI(){
-  const c=sg('lv_api')||{};
-  if(c.key){
-    document.getElementById('okey').value=c.key;
+async function loadAPI(){
+  let c = null;
+  try { c = await window.fsGetConfig(); } catch(e) {}
+  if(!c) c = sg('lv_api') || {};
+  if(c && c.key){
+    document.getElementById('okey').value = c.key;
     document.getElementById('api-status').innerHTML=`<div class="ks ks-ok"> บันทึกแล้ว (${mask(c.key)})</div>`;
   } else {
     document.getElementById('api-status').innerHTML=`<div class="ks ks-no"> ยังไม่มี API Key — AI Tutor ใช้โหมดจำลอง</div>`;
   }
-  if(c.model)document.getElementById('omodel').value=c.model;
-  document.getElementById('oprompt').value=c.prompt||
+  if(c && c.model) document.getElementById('omodel').value = c.model;
+  document.getElementById('oprompt').value = (c && c.prompt) ||
     'คุณคือ AI Tutor สำหรับวิชาเทคโนโลยีเมล็ดพันธุ์ ระดับ ปวช–ปวส\nตอบเป็นภาษาไทย ชัดเจน เข้าใจง่าย อ้างอิงเนื้อหาในบทเรียนเสมอ\nถ้าไม่มีในบทเรียนให้บอกตรงๆ และแนะนำให้ถามครูผู้สอน';
 }
 function mask(k){if(!k||k.length<8)return'***';return k.slice(0,7)+'•••'+k.slice(-4);}
-function saveAPI(){
+async function saveAPI(){
   const key=document.getElementById('okey').value.trim();
   const model=document.getElementById('omodel').value;
   const prompt=document.getElementById('oprompt').value.trim();
   if(!key){toast('กรุณากรอก API Key','');return;}
   if(!key.startsWith('sk-')){toast('API Key ต้องขึ้นต้นด้วย sk-','');return;}
-  ss('lv_api',{key,model,prompt,updated:new Date().toLocaleString('th-TH')});
-  toast('บันทึก API Key แล้ว','');loadAPI();
+  const data = {key, model, prompt, updated: new Date().toLocaleString('th-TH')};
+  try {
+    await window.fsSaveConfig(data);
+    ss('lv_api', data); // เก็บ local ด้วยเผื่อ offline
+    toast('บันทึก API Key แล้ว ✓ ทุกอุปกรณ์จะอัปเดตทันที','');
+    loadAPI();
+  } catch(e) {
+    toast('เกิดข้อผิดพลาด: '+e.message,'');
+  }
 }
 async function testAPI(){
   const c=sg('lv_api')||{};
