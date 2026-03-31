@@ -184,10 +184,9 @@ input:checked+.sldr:before{transform:translateX(19px);background:white;}
 .pg.on{animation:fadeUp .26s ease forwards;}
 </style>
 <!-- Firebase SDK -->
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
 const firebaseConfig = {
   apiKey: "AIzaSyDPC4EkkU5ah2PwqUDkILrqP3N-tiPEn8k",
   authDomain: "baan-malet-phan.firebaseapp.com",
@@ -196,22 +195,20 @@ const firebaseConfig = {
   messagingSenderId: "1019868862230",
   appId: "1:1019868862230:web:ba3dfe45cc9fa34e3a6237"
 };
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 // ── Users ──
 window.fsGetUsers = async () => {
-  const snap = await getDocs(collection(db, 'users'));
+  const snap = await db.collection('users').get();
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 };
-window.fsDeleteUser = async (id) => { await deleteDoc(doc(db, 'users', id)); };
-window.fsResetPassword = async (id) => { await updateDoc(doc(db, 'users', id), { password: '1234' }); };
+window.fsDeleteUser = async (id) => { await db.collection('users').doc(id).delete(); };
+window.fsResetPassword = async (id) => { await db.collection('users').doc(id).update({ password: '1234' }); };
 
 // ── Scores (real-time) ──
 window.fsWatchScores = (callback) => {
-  const q = query(collection(db, 'scores'), orderBy('time', 'desc'));
-  return onSnapshot(q, snap => {
+  return db.collection('scores').orderBy('time','desc').onSnapshot(snap => {
     const scores = snap.docs.map(d => {
       const data = d.data();
       return { ...data, time: data.time?.toMillis ? data.time.toMillis() : Date.now() };
@@ -222,20 +219,20 @@ window.fsWatchScores = (callback) => {
 
 // ── Reset Requests (real-time) ──
 window.fsWatchResets = (callback) => {
-  return onSnapshot(collection(db, 'reset_requests'), snap => {
+  return db.collection('reset_requests').onSnapshot(snap => {
     const reqs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     reqs.sort((a,b) => new Date(b.requestedAt) - new Date(a.requestedAt));
     callback(reqs);
   });
 };
 window.fsResetUserPassword = async (reqId, userId) => {
-  await updateDoc(doc(db, 'users', userId), { password: '1234' });
-  await updateDoc(doc(db, 'reset_requests', reqId), { status: 'done', doneAt: new Date().toISOString() });
+  await db.collection('users').doc(userId).update({ password: '1234' });
+  await db.collection('reset_requests').doc(reqId).update({ status: 'done', doneAt: new Date().toISOString() });
 };
-window.fsDismissReset = async (reqId) => { await deleteDoc(doc(db, 'reset_requests', reqId)); };
+window.fsDismissReset = async (reqId) => { await db.collection('reset_requests').doc(reqId).delete(); };
 
-// ── Real-time badge update ──
-onSnapshot(collection(db, 'reset_requests'), snap => {
+// ── Badge real-time ──
+db.collection('reset_requests').onSnapshot(snap => {
   const pending = snap.docs.filter(d => d.data().status === 'pending').length;
   const badge = document.getElementById('reset-badge');
   if(badge){ if(pending>0){badge.style.display='inline';badge.textContent=pending;}else{badge.style.display='none';} }
@@ -244,20 +241,20 @@ onSnapshot(collection(db, 'reset_requests'), snap => {
 // ── Config (API Key) ──
 window.fsGetConfig = async () => {
   try {
-    const snap = await getDoc(doc(db, 'config', 'ai'));
-    return snap.exists() ? snap.data() : null;
+    const snap = await db.collection('config').doc('ai').get();
+    return snap.exists ? snap.data() : null;
   } catch(e) { return null; }
 };
 window.fsSaveConfig = async (data) => {
-  await setDoc(doc(db, 'config', 'ai'), data);
+  await db.collection('config').doc('ai').set(data);
 };
 window.fsWatchConfig = (callback) => {
-  return onSnapshot(doc(db, 'config', 'ai'), snap => {
-    callback(snap.exists() ? snap.data() : null);
+  return db.collection('config').doc('ai').onSnapshot(snap => {
+    callback(snap.exists ? snap.data() : null);
   });
 };
 
-console.log('✓ Admin Firebase connected');
+console.log('✓ Admin Firebase connected (compat)');
 </script>
 </head>
 <body>

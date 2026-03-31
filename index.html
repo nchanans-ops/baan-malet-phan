@@ -670,10 +670,9 @@ p.body-text{font-size:0.94rem;color:var(--gray-600);line-height:1.9;margin-botto
 .view.active>*{animation:fu 0.32s ease forwards;}
 </style>
 <!-- Firebase SDK -->
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, where, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
 const firebaseConfig = {
   apiKey: "AIzaSyDPC4EkkU5ah2PwqUDkILrqP3N-tiPEn8k",
   authDomain: "baan-malet-phan.firebaseapp.com",
@@ -682,77 +681,59 @@ const firebaseConfig = {
   messagingSenderId: "1019868862230",
   appId: "1:1019868862230:web:ba3dfe45cc9fa34e3a6237"
 };
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// ── expose to global scope ──
-window._db = db;
-window._fs = { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, where, serverTimestamp };
-
-// ── USER FUNCTIONS (Firestore) ──
-window.getUsers = async function() {
+// ── Users ──
+window.getUsers = async () => {
   try {
-    const snap = await getDocs(collection(db, 'users'));
+    const snap = await db.collection('users').get();
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   } catch(e) { return []; }
 };
-
-window.saveUser = async function(user) {
-  try {
-    await setDoc(doc(db, 'users', user.id), user);
-  } catch(e) { console.error('saveUser error', e); }
+window.saveUser = async (user) => {
+  await db.collection('users').doc(user.id).set(user);
+};
+window.deleteUserFS = async (id) => { await db.collection('users').doc(id).delete(); };
+window.resetPasswordFS = async (userId) => {
+  await db.collection('users').doc(userId).update({ password: '1234' });
 };
 
-window.deleteUserFS = async function(id) {
-  try { await deleteDoc(doc(db, 'users', id)); } catch(e) {}
+// ── Scores ──
+window.saveScoreFS = async (name, pct, chapter) => {
+  await db.collection('scores').add({
+    name, pct, chapter,
+    score: Math.round(pct/10), total: 10,
+    time: firebase.firestore.FieldValue.serverTimestamp()
+  });
 };
 
-window.resetPasswordFS = async function(userId) {
-  try { await updateDoc(doc(db, 'users', userId), { password: '1234' }); } catch(e) {}
+// ── Reset Requests ──
+window.addResetRequest = async (req) => {
+  await db.collection('reset_requests').doc(req.id).set(req);
 };
-
-// ── SCORE FUNCTIONS (Firestore) ──
-window.saveScoreFS = async function(name, pct, chapter) {
-  try {
-    await addDoc(collection(db, 'scores'), {
-      name, pct, chapter,
-      score: Math.round(pct / 10), total: 10,
-      time: serverTimestamp()
-    });
-  } catch(e) { console.error('saveScore error', e); }
+window.updateResetRequest = async (id, data) => {
+  await db.collection('reset_requests').doc(id).update(data);
 };
-
-// ── RESET REQUEST FUNCTIONS (Firestore) ──
-window.addResetRequest = async function(req) {
-  try {
-    await setDoc(doc(db, 'reset_requests', req.id), req);
-  } catch(e) { console.error('addResetRequest error', e); }
-};
-
-window.updateResetRequest = async function(id, data) {
-  try { await updateDoc(doc(db, 'reset_requests', id), data); } catch(e) {}
-};
-
-window.deleteResetRequest = async function(id) {
-  try { await deleteDoc(doc(db, 'reset_requests', id)); } catch(e) {}
+window.deleteResetRequest = async (id) => {
+  await db.collection('reset_requests').doc(id).delete();
 };
 
 // ── Config (API Key) real-time ──
 window.fsGetConfig = async () => {
   try {
-    const snap = await getDoc(doc(db, 'config', 'ai'));
-    return snap.exists() ? snap.data() : null;
+    const snap = await db.collection('config').doc('ai').get();
+    return snap.exists ? snap.data() : null;
   } catch(e) { return null; }
 };
 
-// watch real-time เมื่อ Admin อัปเดต key จะได้ทันที
-onSnapshot(doc(db, 'config', 'ai'), snap => {
-  window._aiConfig = snap.exists() ? snap.data() : null;
-  console.log('✓ AI config updated:', window._aiConfig ? 'has key' : 'no key');
+// watch real-time
+db.collection('config').doc('ai').onSnapshot(snap => {
+  window._aiConfig = snap.exists ? snap.data() : null;
+  console.log('✓ AI config:', window._aiConfig ? 'has key' : 'no key');
 });
 
-console.log('✓ Firebase Firestore connected');
+console.log('✓ Firebase connected (compat)');
 </script>
 </head>
 <body>
