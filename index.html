@@ -4487,6 +4487,7 @@ async function doForgot(){
 
 function applyLoginState(){
   if(!isLoggedIn()) return;
+
   // ปลดล็อค chap-lock-wrapper ทั้งหมด
   document.querySelectorAll('.chap-lock-wrapper').forEach(wrapper => {
     const overlay = wrapper.querySelector('.lock-overlay');
@@ -4494,7 +4495,6 @@ function applyLoginState(){
     if(overlay) overlay.style.display = 'none';
     if(card){
       card.classList.remove('locked-card');
-      // คืน onclick ให้ card ตาม index บท
       const numEl = card.querySelector('.chap-num');
       if(numEl){
         const lessonIdx = parseInt(numEl.textContent) - 1;
@@ -4505,6 +4505,18 @@ function applyLoginState(){
       }
     }
   });
+
+  // ปลดล็อค quiz cards ทั้งหมด
+  ['all','1','2','3','4','5','6','7','8'].forEach(m => {
+    const card = document.getElementById('qm-'+m);
+    if(!card) return;
+    card.style.opacity = '';
+    card.style.filter = '';
+    card.style.pointerEvents = '';
+    const lb = card.querySelector('.lock-badge');
+    if(lb) lb.remove();
+  });
+
   // อัปเดต sidebar
   updateSidebar();
 }
