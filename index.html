@@ -668,9 +668,6 @@ p.body-text{font-size:0.94rem;color:var(--gray-600);line-height:1.9;margin-botto
 }
 @keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .view.active>*{animation:fu 0.32s ease forwards;}
-
-
-}
 </style>
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -4348,7 +4345,7 @@ async function doForgot(){
   }
 }
 
-
+function applyLoginState(){
   if(!isLoggedIn()) return;
   // ปลดล็อค chap-lock-wrapper ทั้งหมด
   document.querySelectorAll('.chap-lock-wrapper').forEach(wrapper => {
