@@ -684,16 +684,14 @@ p.body-text{font-size:0.94rem;color:var(--gray-600);line-height:1.9;margin-botto
   .mob-hero{display:block !important;}
   /* ── NAV: ซ่อนบน mobile ── */
   .nav{display:none !important;}
-  .mob-nav{display:flex !important;position:sticky;top:0;z-index:400;background:#14532d;flex-direction:column;}
+  .mob-nav{display:flex !important;position:sticky;top:0;z-index:400;background:#15803d;flex-direction:column;}
   .app{padding-top:0 !important;padding-bottom:72px !important;}
 
   /* ── OVERVIEW: chapter cards ── */
-  .overview-body{padding:20px 16px !important;background:#f0fdf4;}
+  .overview-body{padding:20px 16px !important;}
   .chap-pills{display:none !important;}
   .chap-info-title{font-size:0.93rem !important;}
   .chap-body{padding:14px 14px !important;}
-  .chap-card:not(.locked-card){border-left:3px solid #16a34a !important;border-radius:0 16px 16px 0 !important;}
-  .chap-lock-wrapper .chap-card.locked-card{border-left:3px solid #e5e7eb !important;}
 
   /* ── LESSON ── */
   .lesson-main{padding:16px 16px 40px !important;}
@@ -722,7 +720,7 @@ p.body-text{font-size:0.94rem;color:var(--gray-600);line-height:1.9;margin-botto
   .mobile-bottom-nav{
     display:flex !important;
     position:fixed;bottom:0;left:0;right:0;
-    background:white;border-top:1px solid #dcfce7;
+    background:white;border-top:1px solid #e5e7eb;
     padding:6px 0 max(8px,env(safe-area-inset-bottom));
     z-index:300;
   }
@@ -732,7 +730,8 @@ p.body-text{font-size:0.94rem;color:var(--gray-600);line-height:1.9;margin-botto
     color:#9ca3af;font-size:9px;font-weight:600;font-family:var(--font);
     border:none;background:none;
   }
-  .mobile-bottom-nav a.active{color:#15803d;}
+  .mobile-bottom-nav a.active,
+  .mobile-bottom-nav a:has(+ .active){color:#15803d;}
   .mbn-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center;}
 }
 
@@ -873,7 +872,7 @@ console.log('✓ Firebase connected (compat)');
 </nav>
 
 <!-- MOBILE HEADER (ซ่อนบน desktop ผ่าน CSS) -->
-<div class="mob-nav" style="display:none;background:#14532d;">
+<div class="mob-nav" style="display:none;">
   <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 18px 8px;">
     <div style="display:flex;align-items:center;gap:10px;">
       <div style="width:34px;height:34px;background:rgba(255,255,255,0.18);border-radius:11px;display:flex;align-items:center;justify-content:center;">
@@ -891,8 +890,8 @@ console.log('✓ Firebase connected (compat)');
 </div>
 
 <!-- MOBILE HERO (ซ่อนบน desktop ผ่าน CSS) -->
-<div class="mob-hero" style="display:none;background:#14532d;padding:0 16px 20px;">
-  <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:16px;">
+<div class="mob-hero" style="display:none;background:#15803d;padding:0 16px 20px;">
+  <div style="background:rgba(255,255,255,0.12);border-radius:20px;padding:16px;">
     <div style="font-size:10px;color:rgba(255,255,255,0.6);margin-bottom:5px;">ประเภทวิชาเกษตรกรรมและประมง · ปวส.</div>
     <div style="font-size:19px;font-weight:800;color:white;line-height:1.3;margin-bottom:14px;">เมล็ดพันธุ์และ<br><span style="color:#86efac;">การจัดการเมล็ดพันธุ์</span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">
