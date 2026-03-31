@@ -4243,8 +4243,7 @@ function authTab(tab){
   document.getElementById('tab-register').style.color = tab==='register'?'white':'#6b7280';
 }
 
-function getUsers(){ try{ return JSON.parse(localStorage.getItem('bmp_users')||'[]'); }catch(e){ return []; } }
-function saveUsers(u){ localStorage.setItem('bmp_users', JSON.stringify(u)); }
+// getUsers และ saveUsers ใช้ Firebase (window.getUsers, window.saveUser)
 function getCurrentUser(){ try{ return JSON.parse(localStorage.getItem('bmp_current')||'null'); }catch(e){ return null; } }
 
 async function doLogin(){
