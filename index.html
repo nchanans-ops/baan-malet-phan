@@ -4097,7 +4097,7 @@ if(_savedName && document.getElementById('player-name-input')){
 trackVisit();
 </script>
 <!-- ══════════════ AUTH OVERLAY ══════════════ -->
-<div id="auth-overlay" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)closeAuthOverlay()">
+<div id="auth-overlay" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);" >
   <div style="width:100%;max-width:420px;position:relative;">
     <!-- ปุ่มปิด อยู่นอก card มุมขวาบน -->
     <button onclick="closeAuthOverlay()" style="position:absolute;top:-14px;right:-14px;width:32px;height:32px;border-radius:50%;border:none;background:white;color:#6b7280;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);z-index:10;transition:background .15s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='white'">✕</button>
@@ -4123,11 +4123,11 @@ trackVisit();
       <div id="form-login">
         <div style="margin-bottom:14px;">
           <label style="font-size:0.82rem;font-weight:600;color:#374151;display:block;margin-bottom:6px;">ชื่อผู้ใช้</label>
-          <input id="login-username" type="text" placeholder="กรอกชื่อผู้ใช้" style="width:100%;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:8px;font-family:var(--font);font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#16a34a'" onblur="this.style.borderColor='#e5e7eb'">
+          <input id="login-username" type="text" placeholder="กรอกชื่อผู้ใช้" autocomplete="off" style="width:100%;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:8px;font-family:var(--font);font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#16a34a'" onblur="this.style.borderColor='#e5e7eb'">
         </div>
         <div style="margin-bottom:18px;">
           <label style="font-size:0.82rem;font-weight:600;color:#374151;display:block;margin-bottom:6px;">รหัสผ่าน</label>
-          <input id="login-password" type="password" placeholder="กรอกรหัสผ่าน" style="width:100%;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:8px;font-family:var(--font);font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#16a34a'" onblur="this.style.borderColor='#e5e7eb'" onkeydown="if(event.key==='Enter')doLogin()">
+          <input id="login-password" type="password" placeholder="กรอกรหัสผ่าน" autocomplete="new-password" style="width:100%;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:8px;font-family:var(--font);font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#16a34a'" onblur="this.style.borderColor='#e5e7eb'" onkeydown="if(event.key==='Enter')doLogin()">
         </div>
         <div id="login-error" style="display:none;color:#dc2626;font-size:0.82rem;margin-bottom:12px;padding:8px 12px;background:#fef2f2;border-radius:6px;"></div>
         <button id="login-btn" onclick="doLogin()" style="width:100%;padding:11px;background:#15803d;color:white;border:none;border-radius:8px;font-family:var(--font);font-size:0.92rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;">เข้าสู่ระบบ</button>
@@ -4164,11 +4164,11 @@ trackVisit();
       <div id="form-register" style="display:none;">
         <div style="margin-bottom:12px;">
           <label style="font-size:0.82rem;font-weight:600;color:#374151;display:block;margin-bottom:6px;">ชื่อ-นามสกุล</label>
-          <input id="reg-name" type="text" placeholder="เช่น สมชาย ใจดี" style="width:100%;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:8px;font-family:var(--font);font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#16a34a'" onblur="this.style.borderColor='#e5e7eb'">
+          <input id="reg-name" type="text" placeholder="เช่น สมชาย ใจดี" autocomplete="off" style="width:100%;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:8px;font-family:var(--font);font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#16a34a'" onblur="this.style.borderColor='#e5e7eb'">
         </div>
         <div style="margin-bottom:12px;">
           <label style="font-size:0.82rem;font-weight:600;color:#374151;display:block;margin-bottom:6px;">ชื่อผู้ใช้</label>
-          <input id="reg-username" type="text" placeholder="ภาษาอังกฤษ ตัวเลข ไม่มีช่องว่าง" style="width:100%;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:8px;font-family:var(--font);font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#16a34a'" onblur="this.style.borderColor='#e5e7eb'">
+          <input id="reg-username" type="text" placeholder="ภาษาอังกฤษ ตัวเลข ไม่มีช่องว่าง" autocomplete="off" style="width:100%;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:8px;font-family:var(--font);font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#16a34a'" onblur="this.style.borderColor='#e5e7eb'">
         </div>
         <div style="margin-bottom:12px;">
           <label style="font-size:0.82rem;font-weight:600;color:#374151;display:block;margin-bottom:6px;">โรงเรียน/วิทยาลัย</label>
@@ -4176,7 +4176,7 @@ trackVisit();
         </div>
         <div style="margin-bottom:16px;">
           <label style="font-size:0.82rem;font-weight:600;color:#374151;display:block;margin-bottom:6px;">รหัสผ่าน</label>
-          <input id="reg-password" type="password" placeholder="อย่างน้อย 4 ตัวอักษร" style="width:100%;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:8px;font-family:var(--font);font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#16a34a'" onblur="this.style.borderColor='#e5e7eb'" onkeydown="if(event.key==='Enter')doRegister()">
+          <input id="reg-password" type="password" placeholder="อย่างน้อย 4 ตัวอักษร" autocomplete="new-password" style="width:100%;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:8px;font-family:var(--font);font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#16a34a'" onblur="this.style.borderColor='#e5e7eb'" onkeydown="if(event.key==='Enter')doRegister()">
         </div>
         <div id="reg-error" style="display:none;color:#dc2626;font-size:0.82rem;margin-bottom:12px;padding:8px 12px;background:#fef2f2;border-radius:6px;"></div>
         <div id="reg-success" style="display:none;color:#15803d;font-size:0.82rem;margin-bottom:12px;padding:8px 12px;background:#f0fdf4;border-radius:6px;"></div>
@@ -4427,4 +4427,3 @@ if(_currentUser){
 </script>
 </body>
 </html>
-<!-- baan-malet-phan -->
