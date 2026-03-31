@@ -668,7 +668,104 @@ p.body-text{font-size:0.94rem;color:var(--gray-600);line-height:1.9;margin-botto
 }
 @keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .view.active>*{animation:fu 0.32s ease forwards;}
+
+/* ══════════ MOBILE UI (< 1024px) ══════════ */
+@media(max-width:1023px){
+
+  /* ── NAV: ซ่อน tabs เหลือแค่ logo + login ── */
+  .nav{height:52px;}
+  .nav-tabs{display:none !important;}
+  .nav-course,.nav-div{display:none !important;}
+  .nav-inner{padding:0 16px;}
+  .app{padding-top:52px;}
+
+  /* ── HERO: ปรับให้ดูดีบนมือถือ ── */
+  .hero{padding:28px 20px 32px;}
+  .hero-inner{grid-template-columns:1fr !important;}
+  .hero-right{display:none;}
+  .hero h1{font-size:clamp(1.5rem,5vw,2.2rem) !important;white-space:normal !important;}
+  .hero-desc{font-size:0.88rem;}
+  .hero-stats{gap:16px;}
+  .hero-stat-num{font-size:1.6rem;}
+  .btn-hero-primary,.btn-hero-secondary{padding:12px 20px;font-size:0.9rem;}
+
+  /* ── OVERVIEW: chapter cards ── */
+  .overview-body{padding:20px 16px !important;}
+  .chap-pills{display:none !important;}
+  .chap-info-title{font-size:0.93rem !important;}
+  .chap-body{padding:14px 14px !important;}
+
+  /* ── LESSON ── */
+  .lesson-main{padding:16px 16px 40px !important;}
+  .ls-title{font-size:1.2rem !important;}
+
+  /* ── QUIZ ── */
+  .qmode-wrap{padding:16px !important;}
+  .qmode-h{font-size:1rem !important;}
+  .qmode-grid{grid-template-columns:repeat(3,1fr) !important;gap:8px !important;}
+  .qmode-card{padding:10px 6px !important;}
+  .qm-sub{font-size:0.7rem !important;}
+  .qmode-start{padding:12px !important;font-size:0.9rem !important;}
+
+  /* ── FLASHCARD ── */
+  .fc-wrap{padding:16px !important;}
+  .fc-card{margin:0 0 16px !important;}
+
+  /* ── AI TUTOR ── */
+  .ai-layout{grid-template-columns:1fr !important;}
+  .ai-side{display:none !important;}
+  .ai-msgs{padding:14px !important;}
+  .ai-inp-wrap{padding:10px 12px !important;}
+
+  /* ── BOTTOM NAV ── */
+  .app{padding-bottom:64px !important;}
+  .mobile-bottom-nav{
+    display:flex !important;
+    position:fixed;bottom:0;left:0;right:0;
+    background:white;border-top:1px solid #e5e7eb;
+    padding:6px 0 max(8px,env(safe-area-inset-bottom));
+    z-index:300;
+  }
+  .mobile-bottom-nav a{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+    text-decoration:none;cursor:pointer;padding:4px 0;
+    color:#9ca3af;font-size:9px;font-weight:600;font-family:var(--font);
+    border:none;background:none;
+  }
+  .mobile-bottom-nav a.active,
+  .mobile-bottom-nav a:has(+ .active){color:#15803d;}
+  .mbn-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center;}
+}
+
+@media(min-width:1024px){
+  .mobile-bottom-nav{display:none !important;}
+}
 </style>
+
+<!-- MOBILE BOTTOM NAV - CSS only driven -->
+<style id="mbn-style"></style>
+<nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+  <a onclick="showView('overview');mbnActive('overview')" id="mbn-overview" class="active">
+    <div class="mbn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+    ภาพรวม
+  </a>
+  <a onclick="showView('lesson');setLesson(0);mbnActive('lesson')" id="mbn-lesson">
+    <div class="mbn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+    บทเรียน
+  </a>
+  <a onclick="showView('quiz');mbnActive('quiz')" id="mbn-quiz">
+    <div class="mbn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+    ทดสอบ
+  </a>
+  <a onclick="showView('flashcard');mbnActive('flashcard')" id="mbn-flashcard">
+    <div class="mbn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg></div>
+    Flashcard
+  </a>
+  <a onclick="showView('ai');mbnActive('ai')" id="mbn-ai">
+    <div class="mbn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+    AI Tutor
+  </a>
+</nav>
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -4423,6 +4520,15 @@ function showAuthOverlay(){
 function closeAuthOverlay(){
   document.getElementById('auth-overlay').style.display='none';
   document.body.style.overflow='';
+}
+
+function mbnActive(id){
+  document.querySelectorAll('.mobile-bottom-nav a').forEach(a=>{
+    a.classList.remove('active');
+    a.style.color='#9ca3af';
+  });
+  const el = document.getElementById('mbn-'+id);
+  if(el){ el.classList.add('active'); el.style.color='#15803d'; }
 }
 
 function doLogout(){
