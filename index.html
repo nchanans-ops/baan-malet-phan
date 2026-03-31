@@ -3911,9 +3911,17 @@ function trackQuiz(){
 }
 
 // ─── AI with real OpenAI API ───
-function getAPIKey(){
-  // ดึงจาก Firestore cache ก่อน (real-time) ถ้าไม่มีค่อยใช้ localStorage
+async function getAPIKey(){
+  // 1. ใช้ cache real-time จาก Firestore listener ถ้ามีแล้ว
   if(window._aiConfig && window._aiConfig.key) return window._aiConfig;
+  // 2. ดึงจาก Firestore โดยตรง (กรณี listener ยังไม่ fire)
+  try {
+    if(window.fsGetConfig){
+      const cfg = await window.fsGetConfig();
+      if(cfg && cfg.key){ window._aiConfig = cfg; return cfg; }
+    }
+  } catch(e){}
+  // 3. fallback localStorage
   try{const c=stg('lv_api');return c||null;}catch{return null;}
 }
 
@@ -3948,7 +3956,7 @@ async function sendMsg(){
   }
 
   // 2. No lesson match — use AI
-  const cfg=getAPIKey();
+  const cfg=await getAPIKey();
   if(cfg&&cfg.key){
     try{
       const reply=await askOpenAI(msg,cfg);
