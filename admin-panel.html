@@ -784,7 +784,7 @@ function loadDash(){
   document.getElementById('s-ai').textContent=stats.ai;
   document.getElementById('s-quiz').textContent=stats.quiz;
   const weekly=sg('lv_weekly')||{};
-  renderChart(weekly);renderChap();renderAct();
+  renderChart(weekly);renderChap();startActivityWatch();
 }
 
 function renderChart(w){
