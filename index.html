@@ -800,6 +800,9 @@ p.body-text{font-size:0.94rem;color:var(--gray-600);line-height:1.9;margin-botto
 @media(min-width:1024px){
   #splash{display:none;}
 }
+@media(display-mode:standalone){
+  #splash{display:flex !important;}
+}
 </style>
 
 <!-- MOBILE BOTTOM NAV - CSS only driven -->
@@ -4660,10 +4663,17 @@ function closeAuthOverlay(){
 }
 
 
-// Splash screen
+// Splash screen — แสดงเมื่อเปิดจาก Home Screen (standalone) หรือ mobile
 (function(){
   var s = document.getElementById('splash');
   if(!s) return;
+  var isStandalone = window.navigator.standalone === true ||
+                     window.matchMedia('(display-mode: standalone)').matches;
+  var isMobile = window.innerWidth < 1024;
+  if(!isStandalone && !isMobile){
+    s.classList.add('hidden');
+    return;
+  }
   setTimeout(function(){ s.classList.add('hidden'); }, 2600);
 })();
 
