@@ -1154,7 +1154,6 @@ async function loadArticles(){
             ${a.excerpt?`<div class="article-card-excerpt">${a.excerpt}</div>`:''}
           </div>
           <div class="article-card-footer">
-            <a class="btn-view" href="https://www.baanmaletphan.co/article.html?id=${a.id}" target="_blank">ดูบทความ ↗</a>
             <button class="btn-edit-card" onclick='editArticle(${JSON.stringify(a)})'>แก้ไข</button>
             <button class="btn-del-card" onclick="deleteArticle('${a.id}','${(a.title||'').replace(/'/g,'')}')">ลบ</button>
           </div>
