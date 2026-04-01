@@ -298,7 +298,7 @@ body{font-family:var(--font);background:var(--gray-50);color:var(--gray-800);lin
   justify-content:space-between;
 }
 .sb-item-left{display:flex;align-items:center;gap:9px;flex:1;min-width:0;}
-.sb-chevron{font-size:0.6rem;color:var(--gray-300);transition:transform 0.2s;flex-shrink:0;margin-left:4px;}
+.sb-chevron{color:var(--gray-300);transition:transform 0.2s;flex-shrink:0;margin-left:4px;display:flex;align-items:center;}
 .sb-item.open .sb-chevron{transform:rotate(90deg);}
 .sb-item:hover{background:var(--green-50);color:var(--green-800);}
 .sb-item.active{background:var(--green-50);color:var(--green-800);border-left-color:var(--green-600);font-weight:600;}
@@ -1384,7 +1384,7 @@ console.log('✓ Firebase connected (compat)');
       <div class="sb-label">บทที่ 1</div>
       <div class="sb-item" id="si0" onclick="toggleSub(0)">
         <div class="sb-item-left"><div class="sb-icon ic-pending" id="sic0">1</div>ความหมายและความสำคัญ</div>
-        <span class="sb-chevron">▶</span>
+        <span class="sb-chevron"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></span>
       </div>
       <div class="sb-subs" id="subs0">
         <div class="sb-sub-item" onclick="setLesson(0);scrollToSection('sec-1-1')"><div class="sb-sub-dot"></div>1.1 Seed Technology คืออะไร</div>
@@ -1396,7 +1396,7 @@ console.log('✓ Firebase connected (compat)');
       <div class="sb-label">บทที่ 2</div>
       <div class="sb-item" id="si1" onclick="toggleSub(1)">
         <div class="sb-item-left"><div class="sb-icon ic-pending" id="sic1">2</div>การพัฒนาและการสุกแก่</div>
-        <span class="sb-chevron">▶</span>
+        <span class="sb-chevron"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></span>
       </div>
       <div class="sb-subs" id="subs1">
         <div class="sb-sub-item" onclick="setLesson(1);scrollToSection('sec-2-1')"><div class="sb-sub-dot"></div>2.1 การเกิดและการเจริญของดอก</div>
@@ -1408,7 +1408,7 @@ console.log('✓ Firebase connected (compat)');
       <div class="sb-label">บทที่ 3</div>
       <div class="sb-item" id="si2" onclick="toggleSub(2)">
         <div class="sb-item-left"><div class="sb-icon ic-pending" id="sic2">3</div>การงอกของเมล็ดพันธุ์</div>
-        <span class="sb-chevron">▶</span>
+        <span class="sb-chevron"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></span>
       </div>
       <div class="sb-subs" id="subs2">
         <div class="sb-sub-item" onclick="setLesson(2);scrollToSection('sec-3-1')"><div class="sb-sub-dot"></div>3.1 ความหมายการงอก</div>
@@ -1420,7 +1420,7 @@ console.log('✓ Firebase connected (compat)');
       <div class="sb-label">บทที่ 4</div>
       <div class="sb-item" id="si3" onclick="toggleSub(3)">
         <div class="sb-item-left"><div class="sb-icon ic-pending" id="sic3">4</div>การผลิตเมล็ดพันธุ์</div>
-        <span class="sb-chevron">▶</span>
+        <span class="sb-chevron"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></span>
       </div>
       <div class="sb-subs" id="subs3">
         <div class="sb-sub-item" onclick="setLesson(3);scrollToSection('sec-4-1')"><div class="sb-sub-dot"></div>4.1 ความสำคัญต่อการพัฒนาเกษตร</div>
@@ -1430,7 +1430,7 @@ console.log('✓ Firebase connected (compat)');
       <div class="sb-label">บทที่ 5</div>
       <div class="sb-item" id="si4" onclick="toggleSub(4)">
         <div class="sb-item-left"><div class="sb-icon ic-pending" id="sic4">5</div>การตรวจสอบคุณภาพ</div>
-        <span class="sb-chevron">▶</span>
+        <span class="sb-chevron"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></span>
       </div>
       <div class="sb-subs" id="subs4">
         <div class="sb-sub-item" onclick="setLesson(4);scrollToSection('sec-5-1')"><div class="sb-sub-dot"></div>5.1 ความสำคัญของการตรวจสอบ</div>
@@ -1440,7 +1440,7 @@ console.log('✓ Firebase connected (compat)');
       <div class="sb-label">บทที่ 6</div>
       <div class="sb-item" id="si5" onclick="toggleSub(5)">
         <div class="sb-item-left"><div class="sb-icon ic-pending" id="sic5">6</div>การเก็บรักษาเมล็ดพันธุ์</div>
-        <span class="sb-chevron">▶</span>
+        <span class="sb-chevron"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></span>
       </div>
       <div class="sb-subs" id="subs5">
         <div class="sb-sub-item" onclick="setLesson(5);scrollToSection('sec-6-1')"><div class="sb-sub-dot"></div>6.1 ความสูญเสียระหว่างเก็บรักษา</div>
@@ -1452,7 +1452,7 @@ console.log('✓ Firebase connected (compat)');
       <div class="sb-label">บทที่ 7</div>
       <div class="sb-item" id="si6" onclick="toggleSub(6)">
         <div class="sb-item-left"><div class="sb-icon ic-pending" id="sic6">7</div>การรับรองเมล็ดพันธุ์</div>
-        <span class="sb-chevron">▶</span>
+        <span class="sb-chevron"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></span>
       </div>
       <div class="sb-subs" id="subs6">
         <div class="sb-sub-item" onclick="setLesson(6);scrollToSection('sec-7-1')"><div class="sb-sub-dot"></div>7.1 ความหมายและความสำคัญ</div>
@@ -1462,7 +1462,7 @@ console.log('✓ Firebase connected (compat)');
       <div class="sb-label">บทที่ 8</div>
       <div class="sb-item" id="si7" onclick="toggleSub(7)">
         <div class="sb-item-left"><div class="sb-icon ic-pending" id="sic7">8</div>กฎหมายเมล็ดพันธุ์</div>
-        <span class="sb-chevron">▶</span>
+        <span class="sb-chevron"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></span>
       </div>
       <div class="sb-subs" id="subs7">
         <div class="sb-sub-item" onclick="setLesson(7);scrollToSection('sec-8-1')"><div class="sb-sub-dot"></div>8.1 ความหมายกฎหมายเมล็ดพันธุ์</div>
@@ -3379,7 +3379,7 @@ function updateSidebar(){
       it.style.cursor='pointer';
     } else {
       it.style.opacity='';it.style.cursor='';
-      if(i===curLesson){it.classList.add('active');ic.classList.add('ic-active');ic.textContent='▶';}
+      if(i===curLesson){it.classList.add('active');ic.classList.add('ic-active');ic.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>';}
       else if(done[i]){it.classList.add('done');ic.classList.add('ic-done');ic.textContent='✓';}
       else{ic.classList.add('ic-pending');ic.textContent=i+1;}
     }
@@ -3683,7 +3683,7 @@ function showResult(){
       <div class="rev-header" onclick="toggleRev(${i})">
         <span class="rev-badge ${ok?'rev-ok':'rev-ng'}">${ok?'✓':'✗'}</span>
         <span class="rev-q">${i+1}. ${q.q}</span>
-        <span class="rev-chevron" id="revc-${i}">▶</span>
+        <span class="rev-chevron" id="revc-${i}"><svg width=\"10\" height=\"10\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\"><path d=\"M9 18l6-6-6-6\"/></svg></span>
       </div>
       <div class="rev-body" id="revb-${i}" style="display:none">
         <div class="rev-your">คำตอบของคุณ: <strong>${chosenText}</strong></div>
