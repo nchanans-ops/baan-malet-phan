@@ -254,6 +254,23 @@ window.fsWatchConfig = (callback) => {
   });
 };
 
+// ── Activity (real-time) ──
+window.fsWatchActivity = (callback) => {
+  return db.collection('activity')
+    .orderBy('ts', 'desc')
+    .limit(20)
+    .onSnapshot(snap => {
+      const acts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      callback(acts);
+    });
+};
+window.fsClearActivity = async () => {
+  const snap = await db.collection('activity').get();
+  const batch = db.batch();
+  snap.docs.forEach(d => batch.delete(d.ref));
+  await batch.commit();
+};
+
 console.log('✓ Admin Firebase connected (compat)');
 </script>
 </head>
@@ -796,16 +813,21 @@ function renderChap(){
     </div>`).join('');
 }
 
-function renderAct(){
-  const acts=sg('lv_activity')||[];
-  if(!acts.length){
+function renderAct(acts){
+  if(!acts || !acts.length){
     document.getElementById('act-feed').innerHTML=`<div class="empty"><div class="empty-ico">— ไม่มีข้อมูล —</div><p>ยังไม่มีกิจกรรม รอให้นักเรียนเข้าใช้งานหน้าบ้าน</p></div>`;
     return;
   }
-  document.getElementById('act-feed').innerHTML=acts.slice(-12).reverse().map(a=>`
+  document.getElementById('act-feed').innerHTML=acts.map(a=>`
     <div class="act"><div class="act-ico">${a.icon||''}</div>
     <div class="act-tx"><strong>${a.text}</strong> <span>${a.detail||''}</span></div>
-    <div class="act-t">${a.time}</div></div>`).join('');
+    <div class="act-t">${a.time||''}</div></div>`).join('');
+}
+
+// เริ่ม watch activity real-time
+function startActivityWatch(){
+  if(window._actUnsubscribe) window._actUnsubscribe();
+  window._actUnsubscribe = window.fsWatchActivity(acts => renderAct(acts));
 }
 
 // Visitors

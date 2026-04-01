@@ -890,8 +890,18 @@ window.fsGetConfig = async () => {
 // watch real-time
 db.collection('config').doc('ai').onSnapshot(snap => {
   window._aiConfig = snap.exists ? snap.data() : null;
-  console.log('✓ AI config:', window._aiConfig ? 'has key' : 'no key');
 });
+
+// ── Activity log ──
+window.fsLogActivity = async (icon, text, detail) => {
+  try {
+    await db.collection('activity').add({
+      icon, text, detail,
+      time: new Date().toLocaleTimeString('th-TH'),
+      ts: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  } catch(e) {}
+};
 
 console.log('✓ Firebase connected (compat)');
 </script>
@@ -4112,6 +4122,7 @@ function trackVisit(){
     acts.push({icon:'👤',text:'ผู้เรียนเข้าใช้งาน',detail:'เปิดหน้าบ้าน',time:now.toLocaleTimeString('th-TH')});
     if(acts.length>100)acts=acts.slice(-100);
     sts('lv_activity',acts);
+    if(window.fsLogActivity) window.fsLogActivity('👤','ผู้เรียนเข้าใช้งาน','เปิดหน้าบ้าน');
   }catch(e){}
 }
 
@@ -4120,10 +4131,12 @@ function trackAI(msg){
     const sys=stg('lv_sys')||{ai:true};if(!sys.ai)return;
     let stats=stg('lv_stats')||{total:0,today:0,ai:0,quiz:0};
     stats.ai++;sts('lv_stats',stats);
+    const detail='"'+msg.slice(0,30)+(msg.length>30?'…':'')+'"';
     let acts=stg('lv_activity')||[];
-    acts.push({icon:'💬',text:'ถาม AI Tutor',detail:'"'+msg.slice(0,30)+(msg.length>30?'…':'')+'"',time:new Date().toLocaleTimeString('th-TH')});
+    acts.push({icon:'💬',text:'ถาม AI Tutor',detail,time:new Date().toLocaleTimeString('th-TH')});
     if(acts.length>100)acts=acts.slice(-100);
     sts('lv_activity',acts);
+    if(window.fsLogActivity) window.fsLogActivity('💬','ถาม AI Tutor',detail);
   }catch(e){}
 }
 
@@ -4136,6 +4149,7 @@ function trackQuiz(){
     acts.push({icon:'📝',text:'ส่งแบบทดสอบ',detail:'',time:new Date().toLocaleTimeString('th-TH')});
     if(acts.length>100)acts=acts.slice(-100);
     sts('lv_activity',acts);
+    if(window.fsLogActivity) window.fsLogActivity('📝','ส่งแบบทดสอบ','');
   }catch(e){}
 }
 
