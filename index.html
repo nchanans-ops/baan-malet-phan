@@ -846,6 +846,16 @@ p.body-text{font-size:0.94rem;color:var(--gray-600);line-height:1.9;margin-botto
 .blog-tag{display:inline-flex;padding:4px 10px;border-radius:20px;background:var(--green-50);color:var(--green-700);font-size:11px;font-weight:600;margin:2px;cursor:pointer;border:1px solid var(--green-100);}
 .blog-tag:hover{background:var(--green-700);color:white;}
 
+/* ── NAV DROPDOWN ── */
+.nav-dropdown{position:relative;display:inline-flex;align-items:center;}
+.nav-dropdown-btn{padding:5px 8px;border-radius:7px;border:none;background:transparent;font-family:var(--font);font-size:0.73rem;font-weight:500;color:var(--gray-500);cursor:pointer;display:flex;align-items:center;gap:3px;white-space:nowrap;}
+.nav-dropdown-btn:hover{background:var(--green-50);color:var(--green-700);}
+.nav-dropdown-btn.active{background:var(--green-100);color:var(--green-800);font-weight:700;}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:white;border:1px solid var(--gray-200);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.1);min-width:160px;z-index:300;overflow:hidden;}
+.nav-dropdown:hover .nav-dropdown-menu{display:block;}
+.nav-dropdown-item{display:block;width:100%;padding:10px 16px;border:none;background:none;font-family:var(--font);font-size:0.82rem;font-weight:600;color:var(--gray-700);cursor:pointer;text-align:left;white-space:nowrap;}
+.nav-dropdown-item:hover{background:var(--green-50);color:var(--green-700);}
+
 </style>
 
 <!-- MOBILE BOTTOM NAV - CSS only driven -->
@@ -992,8 +1002,13 @@ console.log('✓ Firebase connected (compat)');
       <button class="nav-tab active" id="tab-overview" onclick="showView('overview')">ภาพรวม</button>
       <button class="nav-tab" id="tab-lesson" onclick="showView('lesson');setLesson(0)">บทเรียน</button>
       <button class="nav-tab" id="tab-quiz" onclick="showView('quiz')">แบบทดสอบ</button>
-      <button class="nav-tab" id="tab-flashcard" onclick="showView('flashcard')">Flashcard</button>
-      <button class="nav-tab" id="tab-review" onclick="showView('review')">ทบทวนก่อนสอบ</button>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-btn" id="tab-practice">ฝึกทักษะ <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <button class="nav-dropdown-item" onclick="showView('flashcard');mbnActive('flashcard')">Flashcard</button>
+          <button class="nav-dropdown-item" onclick="showView('review')">ทบทวนก่อนสอบ</button>
+        </div>
+      </div>
       <button class="nav-tab" id="tab-ai" onclick="showView('ai')">AI Tutor</button>
       <button class="nav-tab" id="tab-blog" onclick="showView('blog')">บทความ</button>
     </div>
