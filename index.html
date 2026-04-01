@@ -945,6 +945,12 @@ db.collection('config').doc('ai').onSnapshot(snap => {
   window._aiConfig = snap.exists ? snap.data() : null;
 });
 
+// ── Articles ──
+window.fsGetArticles = async () => {
+  const snap = await db.collection('articles').orderBy('createdAt','desc').get();
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+};
+
 // ── Activity log ──
 window.fsLogActivity = async (icon, text, detail) => {
   try {
@@ -1880,44 +1886,9 @@ console.log('✓ Firebase connected (compat)');
   </div>
   <div class="blog-main">
     <div id="blog-articles">
-      <div class="blog-featured" data-cat="general">
-        <div class="blog-featured-img">
-          <div class="blog-feat-badge">บทความแนะนำ</div>
-          <svg width="48" height="48" viewBox="0 0 52 52" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"><polygon points="26,6 48,22 43,22 43,46 9,46 9,22 4,22" stroke-linejoin="round"/><ellipse cx="26" cy="34" rx="5" ry="8" fill="rgba(255,255,255,0.15)"/></svg>
-        </div>
-        <div class="blog-featured-body">
-          <div class="blog-feat-cat">ความรู้ทั่วไป</div>
-          <div class="blog-featured-title">เมล็ดพันธุ์คืออะไร? ความแตกต่างระหว่างเมล็ดพันธุ์และเมล็ดพืช</div>
-          <div class="blog-featured-excerpt">เมล็ดพันธุ์และเมล็ดพืชมีความแตกต่างในเชิงวิทยาศาสตร์และการใช้งาน บทความนี้อธิบายความหมาย คุณสมบัติ และความสำคัญ</div>
-          <div style="font-size:11px;color:var(--gray-400);">5 นาที · 1 เม.ย. 2568</div>
-        </div>
-      </div>
-      <div class="blog-card" data-cat="production">
-        <div class="blog-card-img"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#86efac" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
-        <div class="blog-card-body">
-          <div class="blog-card-cat">การผลิต</div>
-          <div class="blog-card-title">วิธีการผลิตเมล็ดพันธุ์คุณภาพดีสำหรับเกษตรกร</div>
-          <div class="blog-card-excerpt">การผลิตเมล็ดพันธุ์คุณภาพต้องคำนึงถึงการเลือกพันธุ์ การแยกแปลงผลิต และการเก็บเกี่ยว</div>
-          <div class="blog-card-meta">7 นาที · 28 มี.ค. 2568</div>
-        </div>
-      </div>
-      <div class="blog-card" data-cat="storage">
-        <div class="blog-card-img"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#86efac" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
-        <div class="blog-card-body">
-          <div class="blog-card-cat">การเก็บรักษา</div>
-          <div class="blog-card-title">การเก็บรักษาเมล็ดพันธุ์ให้มีคุณภาพนานขึ้น</div>
-          <div class="blog-card-excerpt">อุณหภูมิ ความชื้น และบรรจุภัณฑ์ คือปัจจัยสำคัญต่ออายุการเก็บรักษาเมล็ดพันธุ์</div>
-          <div class="blog-card-meta">4 นาที · 20 มี.ค. 2568</div>
-        </div>
-      </div>
-      <div class="blog-card" data-cat="law">
-        <div class="blog-card-img"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#86efac" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg></div>
-        <div class="blog-card-body">
-          <div class="blog-card-cat">กฎหมาย</div>
-          <div class="blog-card-title">พ.ร.บ. พันธุ์พืช พ.ศ. 2553 สาระสำคัญที่ควรรู้</div>
-          <div class="blog-card-excerpt">กฎหมายพันธุ์พืชมีผลต่อการผลิต การค้า และการนำเข้า-ส่งออกเมล็ดพันธุ์</div>
-          <div class="blog-card-meta">6 นาที · 15 มี.ค. 2568</div>
-        </div>
+      <div style="text-align:center;padding:40px;color:var(--gray-400);">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" style="margin:0 auto 10px;display:block;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        กำลังโหลดบทความ...
       </div>
     </div>
     <div class="blog-sidebar">
@@ -2024,6 +1995,7 @@ function showView(id){
   window.scrollTo(0,0);
   if(id==='flashcard') fcStart();
   if(id==='quiz') setTimeout(applyGuestQuizLock, 50);
+  if(id==='blog') loadBlogArticles();
 }
 
 
@@ -4878,6 +4850,53 @@ const _currentUser = getCurrentUser();
 if(_currentUser){
   setTimeout(()=>{ updateNavUser(_currentUser); applyLoginState(); }, 100);
   localStorage.setItem('lv_player_name', _currentUser.name);
+}
+
+const catLabel={general:'ความรู้ทั่วไป',production:'การผลิต',storage:'การเก็บรักษา',quality:'การตรวจสอบคุณภาพ',law:'กฎหมาย'};
+
+async function loadBlogArticles(){
+  const list = document.getElementById('blog-articles');
+  try {
+    const articles = await window.fsGetArticles();
+    if(!articles.length){
+      list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray-400);"><svg width=\"36\" height=\"36\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#d1d5db\" stroke-width=\"1.5\" style=\"margin:0 auto 10px;display:block;\"><path d=\"M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z\"/><path d=\"M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z\"/></svg>ยังไม่มีบทความ</div>';
+      return;
+    }
+    const featured = articles[0];
+    const rest = articles.slice(1);
+    list.innerHTML = `
+      <div class="blog-featured" data-cat="${featured.cat||'general'}">
+        <div class="blog-featured-img">
+          <div class="blog-feat-badge">บทความล่าสุด</div>
+          ${featured.img
+            ? `<img src="${featured.img}" style="width:100%;height:100%;object-fit:cover;">`
+            : `<svg width="48" height="48" viewBox="0 0 52 52" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"><polygon points="26,6 48,22 43,22 43,46 9,46 9,22 4,22" stroke-linejoin="round"/><ellipse cx="26" cy="34" rx="5" ry="8" fill="rgba(255,255,255,0.15)"/></svg>`}
+        </div>
+        <div class="blog-featured-body">
+          <div class="blog-feat-cat">${catLabel[featured.cat]||featured.cat||''}</div>
+          <div class="blog-featured-title">${featured.title||''}</div>
+          <div class="blog-featured-excerpt">${featured.excerpt||''}</div>
+          <div style="font-size:11px;color:var(--gray-400);">${featured.time||5} นาที · ${featured.author||''}</div>
+        </div>
+      </div>
+      ${rest.map(a=>`
+      <div class="blog-card" data-cat="${a.cat||'general'}">
+        <div class="blog-card-img">
+          ${a.img
+            ? `<img src="${a.img}" style="width:110px;height:90px;object-fit:cover;">`
+            : `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#86efac" stroke-width="1.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`}
+        </div>
+        <div class="blog-card-body">
+          <div class="blog-card-cat">${catLabel[a.cat]||a.cat||''}</div>
+          <div class="blog-card-title">${a.title||''}</div>
+          <div class="blog-card-excerpt">${a.excerpt||''}</div>
+          <div class="blog-card-meta">${a.time||5} นาที · ${a.author||''}</div>
+        </div>
+      </div>`).join('')}
+    `;
+  } catch(e) {
+    list.innerHTML = '<div style="text-align:center;padding:24px;color:#ef4444;">โหลดบทความไม่สำเร็จ</div>';
+  }
 }
 
 function blogFilter(btn,cat){
