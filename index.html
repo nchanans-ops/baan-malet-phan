@@ -952,6 +952,7 @@ console.log('✓ Firebase connected (compat)');
       <button class="nav-tab" id="tab-flashcard" onclick="showView('flashcard')">Flashcard</button>
       <button class="nav-tab" id="tab-review" onclick="showView('review')">ทบทวนก่อนสอบ</button>
       <button class="nav-tab" id="tab-ai" onclick="showView('ai')">AI Tutor</button>
+      <button class="nav-tab" id="tab-blog" onclick="showView('blog')">บทความ</button>
     </div>
     <div id="nav-login-btn-wrap">
       <div style="display:flex;align-items:center;gap:8px;">
@@ -4489,6 +4490,136 @@ trackVisit();
       </div>
     </div>
   </div>
+
+<!-- ══════════════ BLOG ══════════════ -->
+<div id="view-blog" class="view">
+<style>
+.blog-wrap{max-width:900px;margin:0 auto;padding:32px 24px 80px;}
+.blog-hero-s{background:var(--green-900);border-radius:20px;padding:36px 28px;margin-bottom:28px;}
+.blog-hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.3);border-radius:20px;padding:4px 12px;font-size:11px;color:#4ade80;font-weight:700;margin-bottom:14px;}
+.blog-hero-s h1{font-size:1.8rem;font-weight:800;color:white;line-height:1.25;margin-bottom:8px;}
+.blog-hero-s h1 span{color:#4ade80;}
+.blog-hero-s p{font-size:13px;color:rgba(255,255,255,0.55);}
+.blog-search{background:white;border-radius:12px;border:1.5px solid var(--gray-200);display:flex;align-items:center;gap:10px;padding:11px 16px;margin-bottom:24px;}
+.blog-search input{flex:1;border:none;outline:none;font-family:var(--font);font-size:14px;color:var(--gray-900);background:none;}
+.blog-search input::placeholder{color:var(--gray-300);}
+.blog-cats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+.blog-cat{padding:6px 16px;border-radius:20px;border:1.5px solid var(--gray-200);background:white;font-family:var(--font);font-size:12px;font-weight:700;color:var(--gray-500);cursor:pointer;}
+.blog-cat.active,.blog-cat:hover{background:var(--green-700);border-color:var(--green-700);color:white;}
+.blog-main{display:grid;grid-template-columns:1fr 260px;gap:28px;}
+@media(max-width:700px){.blog-main{grid-template-columns:1fr;}.blog-sidebar{display:none;}}
+.blog-featured{background:white;border-radius:16px;border:1px solid var(--gray-100);overflow:hidden;margin-bottom:16px;}
+.blog-featured-img{height:160px;background:var(--green-900);display:flex;align-items:center;justify-content:center;position:relative;}
+.blog-feat-badge{position:absolute;top:14px;left:14px;background:var(--green-500);color:white;font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;}
+.blog-featured-body{padding:18px 22px;}
+.blog-feat-cat{font-size:10px;font-weight:700;color:var(--green-700);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;}
+.blog-featured-title{font-size:16px;font-weight:800;color:var(--gray-900);margin-bottom:6px;line-height:1.35;}
+.blog-featured-excerpt{font-size:13px;color:var(--gray-500);line-height:1.65;margin-bottom:12px;}
+.blog-card{background:white;border-radius:14px;border:1px solid var(--gray-100);overflow:hidden;margin-bottom:12px;display:flex;}
+.blog-card-img{width:110px;min-height:90px;background:var(--green-50);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.blog-card-body{padding:14px 16px;flex:1;}
+.blog-card-cat{font-size:10px;font-weight:700;color:var(--green-700);letter-spacing:.06em;margin-bottom:5px;}
+.blog-card-title{font-size:14px;font-weight:800;color:var(--gray-900);margin-bottom:5px;line-height:1.4;}
+.blog-card-excerpt{font-size:12px;color:var(--gray-500);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:6px;}
+.blog-card-meta{font-size:11px;color:var(--gray-400);}
+.blog-sidebar{}
+.blog-widget{background:white;border-radius:14px;border:1px solid var(--gray-100);padding:16px;margin-bottom:14px;}
+.blog-widget-title{font-size:11px;font-weight:800;color:var(--gray-900);letter-spacing:.05em;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--green-100);}
+.blog-cta-box{background:var(--green-900);border-radius:14px;padding:18px;text-align:center;margin-bottom:14px;}
+.blog-cta-box h3{font-size:13px;font-weight:800;color:white;margin-bottom:6px;}
+.blog-cta-box p{font-size:11px;color:rgba(255,255,255,0.55);margin-bottom:12px;line-height:1.6;}
+.blog-cta-box button{width:100%;background:#22c55e;color:white;border-radius:10px;padding:9px;font-size:12px;font-weight:800;border:none;font-family:var(--font);cursor:pointer;}
+.blog-pop-item{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--gray-100);}
+.blog-pop-item:last-child{border:none;padding-bottom:0;}
+.blog-pop-num{width:20px;height:20px;background:var(--green-50);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--green-700);flex-shrink:0;}
+.blog-pop-title{font-size:12px;font-weight:700;color:var(--gray-700);line-height:1.4;}
+.blog-pop-meta{font-size:10px;color:var(--gray-400);margin-top:2px;}
+.blog-tag{display:inline-flex;padding:4px 10px;border-radius:20px;background:var(--green-50);color:var(--green-700);font-size:11px;font-weight:600;margin:2px;cursor:pointer;border:1px solid var(--green-100);}
+.blog-tag:hover{background:var(--green-700);color:white;}
+</style>
+<div class="blog-wrap">
+  <div class="blog-hero-s">
+    <div class="blog-hero-badge">คลังความรู้เมล็ดพันธุ์</div>
+    <h1>บทความ<span>วิชาการ</span></h1>
+    <p>รวบรวมบทความด้านเมล็ดพันธุ์ การผลิต การเก็บรักษา และกฎหมาย</p>
+  </div>
+  <div class="blog-search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="blog-search-input" type="text" placeholder="ค้นหาบทความ...">
+  </div>
+  <div class="blog-cats">
+    <button class="blog-cat active" onclick="blogFilter(this,'all')">ทั้งหมด</button>
+    <button class="blog-cat" onclick="blogFilter(this,'general')">ความรู้ทั่วไป</button>
+    <button class="blog-cat" onclick="blogFilter(this,'production')">การผลิต</button>
+    <button class="blog-cat" onclick="blogFilter(this,'storage')">การเก็บรักษา</button>
+    <button class="blog-cat" onclick="blogFilter(this,'law')">กฎหมาย</button>
+  </div>
+  <div class="blog-main">
+    <div id="blog-articles">
+      <div class="blog-featured" data-cat="general">
+        <div class="blog-featured-img">
+          <div class="blog-feat-badge">บทความแนะนำ</div>
+          <svg width="48" height="48" viewBox="0 0 52 52" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"><polygon points="26,6 48,22 43,22 43,46 9,46 9,22 4,22" stroke-linejoin="round"/><ellipse cx="26" cy="34" rx="5" ry="8" fill="rgba(255,255,255,0.15)"/></svg>
+        </div>
+        <div class="blog-featured-body">
+          <div class="blog-feat-cat">ความรู้ทั่วไป</div>
+          <div class="blog-featured-title">เมล็ดพันธุ์คืออะไร? ความแตกต่างระหว่างเมล็ดพันธุ์และเมล็ดพืช</div>
+          <div class="blog-featured-excerpt">เมล็ดพันธุ์และเมล็ดพืชมีความแตกต่างในเชิงวิทยาศาสตร์และการใช้งาน บทความนี้อธิบายความหมาย คุณสมบัติ และความสำคัญ</div>
+          <div style="font-size:11px;color:var(--gray-400);">5 นาที · 1 เม.ย. 2568</div>
+        </div>
+      </div>
+      <div class="blog-card" data-cat="production">
+        <div class="blog-card-img"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#86efac" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <div class="blog-card-body">
+          <div class="blog-card-cat">การผลิต</div>
+          <div class="blog-card-title">วิธีการผลิตเมล็ดพันธุ์คุณภาพดีสำหรับเกษตรกร</div>
+          <div class="blog-card-excerpt">การผลิตเมล็ดพันธุ์คุณภาพต้องคำนึงถึงการเลือกพันธุ์ การแยกแปลงผลิต และการเก็บเกี่ยวที่เหมาะสม</div>
+          <div class="blog-card-meta">7 นาที · 28 มี.ค. 2568</div>
+        </div>
+      </div>
+      <div class="blog-card" data-cat="storage">
+        <div class="blog-card-img"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#86efac" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        <div class="blog-card-body">
+          <div class="blog-card-cat">การเก็บรักษา</div>
+          <div class="blog-card-title">การเก็บรักษาเมล็ดพันธุ์ให้มีคุณภาพนานขึ้น</div>
+          <div class="blog-card-excerpt">อุณหภูมิ ความชื้น และบรรจุภัณฑ์ คือปัจจัยสำคัญที่ส่งผลต่ออายุการเก็บรักษาเมล็ดพันธุ์</div>
+          <div class="blog-card-meta">4 นาที · 20 มี.ค. 2568</div>
+        </div>
+      </div>
+      <div class="blog-card" data-cat="law">
+        <div class="blog-card-img"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#86efac" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg></div>
+        <div class="blog-card-body">
+          <div class="blog-card-cat">กฎหมาย</div>
+          <div class="blog-card-title">พ.ร.บ. พันธุ์พืช พ.ศ. 2553 สาระสำคัญที่ควรรู้</div>
+          <div class="blog-card-excerpt">กฎหมายพันธุ์พืชมีผลต่อการผลิต การค้า และการนำเข้า-ส่งออกเมล็ดพันธุ์</div>
+          <div class="blog-card-meta">6 นาที · 15 มี.ค. 2568</div>
+        </div>
+      </div>
+    </div>
+    <div class="blog-sidebar">
+      <div class="blog-cta-box">
+        <h3>เรียนรู้เพิ่มเติม</h3>
+        <p>เข้าถึงบทเรียน 8 บท แบบทดสอบ และ AI Tutor ได้ฟรี</p>
+        <button onclick="showView('overview')">เริ่มเรียนเลย →</button>
+      </div>
+      <div class="blog-widget">
+        <div class="blog-widget-title">บทความยอดนิยม</div>
+        <div class="blog-pop-item"><div class="blog-pop-num">1</div><div><div class="blog-pop-title">เมล็ดพันธุ์คืออะไร?</div><div class="blog-pop-meta">1,240 ครั้ง</div></div></div>
+        <div class="blog-pop-item"><div class="blog-pop-num">2</div><div><div class="blog-pop-title">การเก็บรักษาเมล็ดพันธุ์</div><div class="blog-pop-meta">980 ครั้ง</div></div></div>
+        <div class="blog-pop-item"><div class="blog-pop-num">3</div><div><div class="blog-pop-title">พ.ร.บ. พันธุ์พืช 2553</div><div class="blog-pop-meta">756 ครั้ง</div></div></div>
+      </div>
+      <div class="blog-widget">
+        <div class="blog-widget-title">หมวดหมู่</div>
+        <span class="blog-tag" onclick="blogFilter(null,'general')">ความรู้ทั่วไป</span>
+        <span class="blog-tag" onclick="blogFilter(null,'production')">การผลิต</span>
+        <span class="blog-tag" onclick="blogFilter(null,'storage')">การเก็บรักษา</span>
+        <span class="blog-tag" onclick="blogFilter(null,'law')">กฎหมาย</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
 </div>
 
 <script>
@@ -4714,6 +4845,22 @@ function closeAuthOverlay(){
   }
   setTimeout(function(){ s.classList.add('hidden'); }, 2600);
 })();
+
+
+function blogFilter(btn, cat){
+  document.querySelectorAll('.blog-cat').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.querySelectorAll('#blog-articles [data-cat]').forEach(card=>{
+    card.style.display = (cat==='all' || card.dataset.cat===cat) ? '' : 'none';
+  });
+}
+document.addEventListener('input', e=>{
+  if(e.target.id!=='blog-search-input') return;
+  const q = e.target.value.toLowerCase();
+  document.querySelectorAll('#blog-articles [data-cat]').forEach(card=>{
+    card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
 
 function mbnActive(id){
   document.querySelectorAll('.mobile-bottom-nav a').forEach(a=>{
