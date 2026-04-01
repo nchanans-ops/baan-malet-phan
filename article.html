@@ -3,8 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta id="meta-desc" name="description" content="">
+<!-- SEO Meta (populated by JS) -->
 <title id="page-title">บทความ — บ้านเมล็ดพันธุ์</title>
+<meta id="meta-desc" name="description" content="">
+<meta id="meta-keywords" name="keywords" content="">
+<link id="meta-canonical" rel="canonical" href="">
+<meta name="robots" content="index, follow">
+<meta name="language" content="th">
+<!-- Open Graph (Facebook / LINE) -->
+<meta id="og-title" property="og:title" content="บทความ — บ้านเมล็ดพันธุ์">
+<meta id="og-desc" property="og:description" content="">
+<meta id="og-image" property="og:image" content="">
+<meta id="og-url" property="og:url" content="">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="บ้านเมล็ดพันธุ์">
+<meta property="og:locale" content="th_TH">
+<!-- Twitter Card -->
+<meta id="tw-title" name="twitter:title" content="บทความ — บ้านเมล็ดพันธุ์">
+<meta id="tw-desc" name="twitter:description" content="">
+<meta id="tw-image" name="twitter:image" content="">
+<meta name="twitter:card" content="summary_large_image">
+<!-- PWA -->
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -121,9 +140,40 @@ async function loadArticle(){
 }
 
 function renderArticle(a){
-  document.getElementById('page-title').textContent=(a.title||'บทความ')+' — บ้านเมล็ดพันธุ์';
-  document.getElementById('meta-desc').content=a.excerpt||'';
-  const cat=catLabel[a.cat]||a.cat||'';
+  const siteUrl = 'https://www.baanmaletphan.co';
+  const pageUrl = siteUrl + '/article.html?id=' + a.id;
+  const metaTitle = (a.metaTitle || a.title || 'บทความ') + ' — บ้านเมล็ดพันธุ์';
+  const metaDesc  = a.metaDesc || a.excerpt || '';
+  const metaImg   = a.img || siteUrl + '/icon-512.png';
+  const cat = catLabel[a.cat] || a.cat || '';
+
+  // basic meta
+  document.getElementById('page-title').textContent = metaTitle;
+  document.getElementById('meta-desc').setAttribute('content', metaDesc);
+  if(a.keywords) document.getElementById('meta-keywords').setAttribute('content', a.keywords);
+  document.getElementById('meta-canonical').setAttribute('href', pageUrl);
+  // OG
+  document.getElementById('og-title').setAttribute('content', metaTitle);
+  document.getElementById('og-desc').setAttribute('content', metaDesc);
+  document.getElementById('og-image').setAttribute('content', metaImg);
+  document.getElementById('og-url').setAttribute('content', pageUrl);
+  // Twitter
+  document.getElementById('tw-title').setAttribute('content', metaTitle);
+  document.getElementById('tw-desc').setAttribute('content', metaDesc);
+  document.getElementById('tw-image').setAttribute('content', metaImg);
+  // JSON-LD
+  const jsonLd = {
+    '@context': 'https://schema.org','@type': 'Article',
+    'headline': a.title||'','description': metaDesc,'image': metaImg,'url': pageUrl,
+    'dateModified': a.updatedAt||'',
+    'author': {'@type':'Person','name': a.author||'ครูจริชาติ โยธะพล'},
+    'publisher': {'@type':'Organization','name':'บ้านเมล็ดพันธุ์','url':siteUrl,'logo':{'@type':'ImageObject','url':siteUrl+'/icon-192.png'}},
+    'articleSection': cat,'inLanguage':'th'
+  };
+  let ldScript = document.getElementById('json-ld');
+  if(!ldScript){ldScript=document.createElement('script');ldScript.id='json-ld';ldScript.type='application/ld+json';document.head.appendChild(ldScript);}
+  ldScript.textContent = JSON.stringify(jsonLd);
+
   document.getElementById('content').innerHTML=`
     <div class="hero">
       ${a.img

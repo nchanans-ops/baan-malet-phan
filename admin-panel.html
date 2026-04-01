@@ -578,6 +578,52 @@ console.log('✓ Admin Firebase connected (compat)');
                 <label>เนื้อหาบทความ <span style="color:var(--text2);font-weight:400;">(รองรับ HTML)</span></label>
                 <textarea class="si2" id="art-content" rows="8" placeholder="&lt;p&gt;เนื้อหาบทความ...&lt;/p&gt;" style="resize:vertical;line-height:1.6;font-family:var(--mono);font-size:.82rem;"></textarea>
               </div>
+
+              <!-- SEO Section -->
+              <div style="border:1.5px solid var(--border2);border-radius:var(--r);padding:16px;margin-top:4px;background:var(--surface2);">
+                <div style="font-size:12px;font-weight:800;color:var(--green-dim);letter-spacing:.08em;margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                  SEO — ช่วยให้ Google ค้นหาเจอ
+                </div>
+                <div class="sf" style="margin-bottom:12px;">
+                  <label style="display:flex;justify-content:space-between;">
+                    <span>Slug (URL สวยงาม)</span>
+                    <span style="font-size:11px;color:var(--text2);font-weight:400;">ภาษาอังกฤษ-ขีด เช่น seed-storage-guide</span>
+                  </label>
+                  <div style="display:flex;gap:6px;align-items:center;">
+                    <span style="font-size:11px;color:var(--text2);white-space:nowrap;">article.html?id=</span>
+                    <input class="si2" id="art-slug" type="text" placeholder="seed-storage-guide" style="margin-bottom:0;font-family:var(--mono);font-size:.82rem;">
+                  </div>
+                  <div style="font-size:11px;color:var(--text2);margin-top:4px;">ถ้าเว้นว่าง ระบบจะสร้างให้อัตโนมัติจากหัวข้อ</div>
+                </div>
+                <div class="sf" style="margin-bottom:12px;">
+                  <label style="display:flex;justify-content:space-between;">
+                    <span>Meta Title</span>
+                    <span id="meta-title-count" style="font-size:11px;color:var(--text2);font-weight:400;">0/60</span>
+                  </label>
+                  <input class="si2" id="art-meta-title" type="text" placeholder="ชื่อที่แสดงบน Google (แนะนำ 50–60 ตัวอักษร)" style="margin-bottom:0;" maxlength="80" oninput="updateSeoCount()">
+                  <div style="font-size:11px;color:var(--text2);margin-top:4px;">ถ้าเว้นว่าง จะใช้ชื่อบทความแทน</div>
+                </div>
+                <div class="sf" style="margin-bottom:12px;">
+                  <label style="display:flex;justify-content:space-between;">
+                    <span>Meta Description</span>
+                    <span id="meta-desc-count" style="font-size:11px;color:var(--text2);font-weight:400;">0/160</span>
+                  </label>
+                  <textarea class="si2" id="art-meta-desc" rows="3" placeholder="คำอธิบายที่แสดงใต้ชื่อใน Google (แนะนำ 120–160 ตัวอักษร)" maxlength="200" oninput="updateSeoCount()" style="resize:vertical;line-height:1.6;margin-bottom:0;"></textarea>
+                  <div style="font-size:11px;color:var(--text2);margin-top:4px;">ถ้าเว้นว่าง จะใช้สรุปย่อแทน</div>
+                </div>
+                <div class="sf" style="margin-bottom:0;">
+                  <label>Keywords <span style="color:var(--text2);font-weight:400;">(คั่นด้วยเครื่องหมายคอมมา)</span></label>
+                  <input class="si2" id="art-keywords" type="text" placeholder="เมล็ดพันธุ์, การเก็บรักษา, ปวส.เกษตร" style="margin-bottom:0;">
+                </div>
+                <!-- SEO Preview -->
+                <div style="margin-top:14px;border:1px solid var(--border);border-radius:8px;padding:12px;background:white;">
+                  <div style="font-size:10px;font-weight:700;color:var(--text2);margin-bottom:8px;letter-spacing:.06em;">ตัวอย่างผลการค้นหา Google</div>
+                  <div id="seo-preview-title" style="font-size:15px;font-weight:600;color:#1a0dab;line-height:1.3;margin-bottom:3px;">ชื่อบทความ — บ้านเมล็ดพันธุ์</div>
+                  <div style="font-size:11px;color:#006621;margin-bottom:4px;">www.baanmaletphan.co › article</div>
+                  <div id="seo-preview-desc" style="font-size:13px;color:#545454;line-height:1.5;">คำอธิบายบทความจะแสดงที่นี่...</div>
+                </div>
+              </div>
               <div style="display:flex;gap:8px;margin-top:4px;">
                 <button class="btn-s" onclick="saveArticle()">บันทึกบทความ</button>
                 <button class="btn-d" onclick="hideArticleForm()">ยกเลิก</button>
@@ -1090,6 +1136,36 @@ async function loadArticles(){
   }
 }
 
+// --- SEO helpers ---
+function toSlug(str){
+  return str.toLowerCase()
+    .replace(/[^\w\s\u0E00-\u0E7Fa-z0-9-]/g,'')
+    .replace(/[\s_]+/g,'-')
+    .replace(/^-+|-+$/g,'')
+    .substring(0,80);
+}
+function updateSeoCount(){
+  const mt = document.getElementById('art-meta-title').value;
+  const md = document.getElementById('art-meta-desc').value;
+  const tc = document.getElementById('meta-title-count');
+  const dc = document.getElementById('meta-desc-count');
+  if(tc){ tc.textContent = mt.length+'/60'; tc.style.color = mt.length>60?'#ef4444':mt.length>=50?'#16a34a':'var(--text2)'; }
+  if(dc){ dc.textContent = md.length+'/160'; dc.style.color = md.length>160?'#ef4444':md.length>=120?'#16a34a':'var(--text2)'; }
+  // preview
+  const title = document.getElementById('art-title').value;
+  const previewT = document.getElementById('seo-preview-title');
+  const previewD = document.getElementById('seo-preview-desc');
+  if(previewT) previewT.textContent = (mt||title||'ชื่อบทความ')+' — บ้านเมล็ดพันธุ์';
+  if(previewD) previewD.textContent = md || document.getElementById('art-excerpt').value || 'คำอธิบายบทความจะแสดงที่นี่...';
+}
+// auto-update preview when title/excerpt changes
+document.addEventListener('DOMContentLoaded',()=>{
+  ['art-title','art-excerpt'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('input', updateSeoCount);
+  });
+});
+
 function showArticleForm(clear=true){
   const form = document.getElementById('article-form');
   form.style.display = 'block';
@@ -1104,7 +1180,12 @@ function showArticleForm(clear=true){
     document.getElementById('art-excerpt').value = '';
     document.getElementById('art-content').value = '';
     document.getElementById('art-img-url').value = '';
+    document.getElementById('art-slug').value = '';
+    document.getElementById('art-meta-title').value = '';
+    document.getElementById('art-meta-desc').value = '';
+    document.getElementById('art-keywords').value = '';
     updateImgPreview('');
+    updateSeoCount();
   }
   form.scrollIntoView({behavior:'smooth'});
 }
@@ -1125,7 +1206,12 @@ function editArticle(a){
   document.getElementById('art-excerpt').value = a.excerpt||'';
   document.getElementById('art-content').value = a.content||'';
   document.getElementById('art-img-url').value = a.img||'';
+  document.getElementById('art-slug').value = a.slug||'';
+  document.getElementById('art-meta-title').value = a.metaTitle||'';
+  document.getElementById('art-meta-desc').value = a.metaDesc||'';
+  document.getElementById('art-keywords').value = a.keywords||'';
   updateImgPreview(a.img||'');
+  updateSeoCount();
   showArticleForm(false);
 }
 
@@ -1134,6 +1220,7 @@ async function saveArticle(){
   if(!title){ toast('กรุณากรอกหัวข้อบทความ',''); return; }
   const id = document.getElementById('article-id').value;
   const img = document.getElementById('art-img-url').value.trim();
+  const rawSlug = document.getElementById('art-slug').value.trim();
   const article = {
     id: id||undefined,
     title,
@@ -1143,6 +1230,10 @@ async function saveArticle(){
     excerpt: document.getElementById('art-excerpt').value.trim(),
     content: document.getElementById('art-content').value.trim(),
     img,
+    slug: rawSlug || toSlug(title),
+    metaTitle: document.getElementById('art-meta-title').value.trim(),
+    metaDesc: document.getElementById('art-meta-desc').value.trim(),
+    keywords: document.getElementById('art-keywords').value.trim(),
     updatedAt: new Date().toISOString(),
   };
   if(!article.id) delete article.id;
